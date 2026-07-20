@@ -142,6 +142,9 @@ func NewClientWithLimit(doer HTTPDoer, routerURL, token string, responseLimit in
 		return nil, errors.New("agentsdk: response limit must be positive")
 	}
 	if httpClient, ok := doer.(*http.Client); ok {
+		if httpClient == nil {
+			return nil, errors.New("agentsdk: HTTP doer is required")
+		}
 		client := *httpClient
 		client.CheckRedirect = func(*http.Request, []*http.Request) error {
 			return http.ErrUseLastResponse

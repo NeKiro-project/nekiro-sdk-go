@@ -88,6 +88,7 @@ func TestNewClientValidation(t *testing.T) {
 		{"nil doer", nil, "https://router.example.dev", "token123", true},
 		{"empty url", http.DefaultClient, "", "token123", true},
 		{"empty token", http.DefaultClient, "https://router.example.dev", "", true},
+		{"typed nil http.Client", (*http.Client)(nil), "https://router.example.dev", "token123", true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
