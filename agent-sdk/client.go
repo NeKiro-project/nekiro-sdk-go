@@ -15,7 +15,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 // PlatformContext carries the trusted inherited Invocation identity presented

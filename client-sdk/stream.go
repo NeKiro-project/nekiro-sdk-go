@@ -10,7 +10,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 // StreamEvent is the active Result Stream Event v2 contract exposed after SDK

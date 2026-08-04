@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 const traceHeader = "x-nek-trace-id"

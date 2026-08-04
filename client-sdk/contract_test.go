@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 func TestFrozenPublicStructSurfaces(t *testing.T) {
@@ -73,7 +73,7 @@ func TestClientSDKImportDirectionAndRouteAreFrozen(t *testing.T) {
 			if strings.Contains(path, "/apps/") || strings.Contains(path, "/sdks/agent-sdk") {
 				t.Fatalf("%s imports forbidden implementation package %s", file, path)
 			}
-			if strings.HasPrefix(path, "github.com/Nene7ko/NeKiro/") && path != "github.com/Nene7ko/NeKiro/contracts" {
+			if strings.HasPrefix(path, "github.com/NeKiro-project/NeKiro/") && path != "github.com/NeKiro-project/NeKiro/contracts" {
 				t.Fatalf("%s imports non-contract repository package %s", file, path)
 			}
 		}

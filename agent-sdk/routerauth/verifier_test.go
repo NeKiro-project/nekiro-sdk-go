@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 var verifierTime = time.Unix(1784700030, 0)

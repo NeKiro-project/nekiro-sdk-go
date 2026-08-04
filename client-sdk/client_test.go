@@ -13,7 +13,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 const validResultJSON = `{"schemaVersion":"1","invocationId":"inv-client","rootTaskId":"task-client","traceId":"trace-client","status":"succeeded","result":{"answer":42}}`

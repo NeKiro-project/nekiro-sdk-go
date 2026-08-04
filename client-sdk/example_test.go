@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Nene7ko/NeKiro/contracts"
-	clientsdk "github.com/Nene7ko/NeKiro/sdks/client-sdk"
+	"github.com/NeKiro-project/NeKiro/contracts"
+	clientsdk "github.com/NeKiro-project/NeKiro/sdks/client-sdk"
 )
 
 func ExampleClient() {

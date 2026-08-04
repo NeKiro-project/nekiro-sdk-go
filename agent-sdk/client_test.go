@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Nene7ko/NeKiro/contracts"
+	"github.com/NeKiro-project/NeKiro/contracts"
 )
 
 func validContext() PlatformContext {
