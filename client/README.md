@@ -110,5 +110,5 @@ after receiving terminal—returns an error wrapping
 `contracts.ErrRuntimeStreamInterrupted`. Cancellation comes from the caller's
 context; the SDK does not reconnect, replay, retry, or poll Ledger content.
 
-See the compiled package example in `example_test.go` and the active wire/API
-contract in `specs/025-workspace-client-sdk/contracts/client-sdk-api.md`.
+See the compiled package example in `example_test.go`. The active wire/API
+contracts are published by `github.com/NeKiro-project/NeKiro/contracts`.

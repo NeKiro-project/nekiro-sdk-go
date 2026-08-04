@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Go
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Check formatting
+        shell: bash
+        run: test -z "$(gofmt -l .)"
+
+      - name: Check module graph
+        shell: bash
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+          go mod verify
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test -count=1 ./...
+
+      - name: Race test
+        run: go test -race ./...
+
+      - name: Vet
+        run: go vet ./...
+
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Go
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Verify public dependency boundary
+        shell: bash
+        run: |
+          if grep -R --line-number --exclude-dir=.git --exclude=go.sum --exclude=ci.yml \
+            -E 'github.com/NeKiro-project/NeKiro/(apps|tests|agents|sdks|internal)|(^|[[:space:]])replace[[:space:]]' .; then
+            echo 'SDK must consume only public core contracts and immutable modules.' >&2
+            exit 1
+          fi
+          test "$(go list -m -f '{{.Path}}' github.com/NeKiro-project/NeKiro)" = \
+            'github.com/NeKiro-project/NeKiro'
+          go test -count=1 ./client -run 'Test(FrozenPublicStructSurfaces|ClientSDKImportDirectionAndRouteAreFrozen)$'
+
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Verify license and repository hygiene
+        shell: bash
+        run: |
+          test -s LICENSE
+          test -s README.md
+          if git grep -n -I -E '(BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})'; then
+            echo 'Potential secret material detected.' >&2
+            exit 1
+          fi
+          if grep -E '(^|[[:space:]])replace[[:space:]]|@(main|master|latest)([[:space:]]|$)' go.mod; then
+            echo 'Local replacement or floating module identity detected.' >&2
+            exit 1
+          fi
+
+  required:
+    if: always()
+    needs:
+      - quality
+      - contract
+      - security
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require all CI jobs
+        env:
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          CONTRACT_RESULT: ${{ needs.contract.result }}
+          SECURITY_RESULT: ${{ needs.security.result }}
+        shell: bash
+        run: |
+          for result in "$QUALITY_RESULT" "$CONTRACT_RESULT" "$SECURITY_RESULT"; do
+            test "$result" = success
+          done

@@ -1,6 +1,6 @@
 # Agent SDK
 
-`sdks/agent-sdk` is a small Go client for the managed Agent Router v1 nested
+`github.com/NeKiro-project/nekiro-sdk-go/agent` is a small Go client for the managed Agent Router v1 nested
 invocation boundary. It carries the trusted platform context supplied by the
 managed transport, validates the untrusted target request, and performs one
 HTTP call through the Router.
