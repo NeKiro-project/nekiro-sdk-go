@@ -1,0 +1,73 @@
+name: Core compatibility
+
+on:
+  workflow_call:
+    inputs:
+      core_sha:
+        description: Full NeKiro Core commit SHA to verify
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      core_sha:
+        description: Full NeKiro Core commit SHA to verify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: core-compatibility-${{ inputs.core_sha }}
+  cancel-in-progress: true
+
+jobs:
+  sdk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out canonical SDK
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: NeKiro-project/nekiro-sdk-go
+          ref: main
+
+      - name: Set up Go
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Validate requested Core revision
+        shell: bash
+        env:
+          CORE_SHA: ${{ inputs.core_sha }}
+        run: |
+          if [[ ! "$CORE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'core_sha must be one full lowercase commit SHA.' >&2
+            exit 1
+          fi
+
+      - name: Resolve exact Core contracts
+        shell: bash
+        env:
+          CORE_SHA: ${{ inputs.core_sha }}
+        run: |
+          go get "github.com/NeKiro-project/NeKiro@${CORE_SHA}"
+          go mod tidy
+          resolved=$(go list -m -f '{{.Version}}' github.com/NeKiro-project/NeKiro)
+          case "$resolved" in
+            *-"${CORE_SHA:0:12}") ;;
+            *) echo "Core resolved to $resolved instead of $CORE_SHA" >&2; exit 1 ;;
+          esac
+
+      - name: Verify SDK against exact Core
+        run: |
+          go build ./...
+          go test -count=1 ./...
+          go vet ./...
+
+      - name: Report success
+        env:
+          CORE_SHA: ${{ inputs.core_sha }}
+        run: echo "::notice title=SDK compatibility passed::All public SDK packages passed against Core ${CORE_SHA}."
