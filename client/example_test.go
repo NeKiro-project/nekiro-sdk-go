@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/NeKiro-project/NeKiro/contracts"
-	clientsdk "github.com/NeKiro-project/NeKiro/sdks/client-sdk"
+	clientsdk "github.com/NeKiro-project/nekiro-sdk-go/client"
 )
 
 func ExampleClient() {

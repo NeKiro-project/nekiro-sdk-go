@@ -70,7 +70,7 @@ func TestClientSDKImportDirectionAndRouteAreFrozen(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.Contains(path, "/apps/") || strings.Contains(path, "/sdks/agent-sdk") {
+			if strings.Contains(path, "/apps/") || strings.Contains(path, "/internal/") {
 				t.Fatalf("%s imports forbidden implementation package %s", file, path)
 			}
 			if strings.HasPrefix(path, "github.com/NeKiro-project/NeKiro/") && path != "github.com/NeKiro-project/NeKiro/contracts" {

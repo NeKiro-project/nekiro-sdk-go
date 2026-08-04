@@ -1,0 +1,22 @@
+bin/
+coverage/
+coverage.out
+*.exe
+*.test
+*.out
+*.prof
+vendor/
+
+# Local configuration and logs
+.env
+.env.*
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+
+# Linked worktrees
+.worktrees/
