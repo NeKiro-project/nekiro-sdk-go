@@ -66,9 +66,13 @@ jobs:
       - name: Verify public dependency boundary
         shell: bash
         run: |
-          if grep -R --line-number --exclude-dir=.git --exclude=go.sum --exclude=ci.yml \
-            -E 'github.com/NeKiro-project/NeKiro/(apps|tests|agents|sdks|internal)|(^|[[:space:]])replace[[:space:]]' .; then
-            echo 'SDK must consume only public core contracts and immutable modules.' >&2
+          if go list -f '{{join .Imports "\n"}}' ./... | \
+            grep -E 'github.com/NeKiro-project/NeKiro/(apps|tests|agents|sdks|internal)'; then
+            echo 'SDK imports a core implementation package.' >&2
+            exit 1
+          fi
+          if grep -E '(^|[[:space:]])replace[[:space:]]' go.mod; then
+            echo 'SDK contains a local module replacement.' >&2
             exit 1
           fi
           test "$(go list -m -f '{{.Path}}' github.com/NeKiro-project/NeKiro)" = \
