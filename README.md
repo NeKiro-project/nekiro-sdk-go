@@ -53,6 +53,12 @@ module revision in the CI checkout, runs the public-contract suite, and never
 commits the changed module files or adds a local `replace` directive. Core uses
 this reusable workflow after every merge to `main`.
 
+## RepoWiki
+
+The [NeKiro Go SDK RepoWiki](https://nekiro-project.github.io/nekiro-sdk-go/)
+publishes the SDK documentation in English and Chinese with MkDocs Material.
+The source README files remain canonical.
+
 ## Pull requests
 
 Pull requests must identify affected public packages and types, the exact Core
