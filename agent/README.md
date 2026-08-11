@@ -15,3 +15,9 @@ Router errors are accepted only when their media type, v4 Platform Error
 shape, trace header, HTTP status, and error code agree. The SDK exposes safe
 status/code/correlation fields through `RouterError`; it never exposes raw
 error response bytes.
+
+Provider processes can use
+[`agent/registration/nacos`](registration/nacos/README.md) to publish one exact
+Release-scoped Runtime instance under the same managed host lifecycle. That
+package composes Core-owned registration and lease mechanics; it does not let a
+Consumer discover or connect to a Provider directly.
