@@ -3,12 +3,14 @@
 This repository is the canonical source for NeKiro's public Go SDKs:
 
 - `agent`: runtime-neutral managed Agent-to-Agent invocation through the NeKiro A2A Router.
+- `agent/registration/nacos`: strict public composition for publishing a Runtime instance through a Core-owned Nacos lease.
 - `agent/routerauth`: verification and middleware for Router-issued invocation credentials.
 - `client`: application invocation of Agents already installed in one Workspace.
 
-The SDK depends only on the public `github.com/NeKiro-project/NeKiro/contracts`
-package. It does not import core service internals, discover endpoints, retry,
-select alternate components, or provide an Agent Runtime.
+The SDK depends only on public NeKiro Core packages: versioned `contracts`, and
+the provider-neutral `registry` surface used by the Nacos registration adapter.
+It does not import Core service internals, discover endpoints, retry, select
+alternate components, or provide an Agent Runtime.
 
 ```bash
 go get github.com/NeKiro-project/nekiro-sdk-go@<reviewed-release>
@@ -19,10 +21,16 @@ Import packages with:
 ```go
 import (
     agentsdk "github.com/NeKiro-project/nekiro-sdk-go/agent"
+    registrationnacos "github.com/NeKiro-project/nekiro-sdk-go/agent/registration/nacos"
     "github.com/NeKiro-project/nekiro-sdk-go/agent/routerauth"
     clientsdk "github.com/NeKiro-project/nekiro-sdk-go/client"
 )
 ```
+
+`agent/registration/nacos` is the only package here that composes public Core
+registry mechanics in addition to contracts. Core remains the owner of the
+registration protocol and lease semantics; the SDK adds strict Runtime-facing
+configuration and transport ergonomics without endpoint discovery or fallback.
 
 Compatibility is explicit in `go.mod`. Consumers must update the SDK and core
 contract versions deliberately; local `replace` directives and floating source
