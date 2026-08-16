@@ -94,7 +94,7 @@ func (client *Client) do(ctx context.Context, request InvokeRequest, stream bool
 	if err != nil {
 		return nil, err
 	}
-	target := client.gatewayOrigin + "/v4/workspaces/" + client.workspaceID + "/invocations"
+	target := client.gatewayOrigin + "/v1/workspaces/" + client.workspaceID + "/invocations"
 	httpRequest, err := http.NewRequestWithContext(ctx, http.MethodPost, target, bytes.NewReader(payload))
 	if err != nil {
 		return nil, fmt.Errorf("clientsdk: construct Gateway request: %w", err)

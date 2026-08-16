@@ -45,7 +45,7 @@ func TestNewClientRejectsNonCanonicalGatewayOriginsWithoutNormalization(t *testi
 		"", " ", " https://gateway.example", "https://gateway.example ",
 		"HTTP://gateway.example", "https://Gateway.example", "ftp://gateway.example",
 		"https://", "gateway.example", "//gateway.example", "https://user:pass@gateway.example",
-		"https://gateway.example/", "https://gateway.example/v4", "https://gateway.example?x=1",
+		"https://gateway.example/", "https://gateway.example/v1", "https://gateway.example/v4", "https://gateway.example?x=1",
 		"https://gateway.example?", "https://gateway.example#fragment", "https://gateway.example#",
 		"https://gateway.example:443", "http://gateway.example:80", "https://gateway.example:0",
 		"https://gateway.example:", "https://gateway.example:08443", "https://gateway.example:65536",

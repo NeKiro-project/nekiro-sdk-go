@@ -17,7 +17,7 @@ func TestInvokeStreamNegotiatesExactRequestAndDeliversIncrementallyThroughEOF(t 
 	tracked := &streamTrackedBody{ReadCloser: reader}
 	var requestBody []byte
 	transport := roundTripFunc(func(request *http.Request) (*http.Response, error) {
-		if request.Method != http.MethodPost || request.URL.Path != "/v4/workspaces/workspace-a/invocations" || request.Header.Get("Accept") != "text/event-stream" || request.Header.Get("Content-Type") != "application/json" || request.Header.Get("Authorization") != "Bearer application-secret" {
+		if request.Method != http.MethodPost || request.URL.Path != "/v1/workspaces/workspace-a/invocations" || request.Header.Get("Accept") != "text/event-stream" || request.Header.Get("Content-Type") != "application/json" || request.Header.Get("Authorization") != "Bearer application-secret" {
 			t.Error("streaming request did not match the exact method, route, media, and authorization contract")
 		}
 		requestBody, _ = io.ReadAll(request.Body)
