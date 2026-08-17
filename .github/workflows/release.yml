@@ -31,8 +31,11 @@ jobs:
             echo 'release tag must be a stable semantic version such as v0.1.0' >&2
             exit 1
           fi
-          test "$(git cat-file -t "refs/tags/$GITHUB_REF_NAME")" = tag
-          test "$(git rev-list -n 1 "refs/tags/$GITHUB_REF_NAME")" = "$GITHUB_SHA"
+          release_verify_ref="refs/tags/release-verify"
+          git fetch --force --no-tags origin "refs/tags/$GITHUB_REF_NAME:$release_verify_ref"
+          test "$(git cat-file -t "$release_verify_ref")" = tag
+          test "$(git rev-list -n 1 "$release_verify_ref")" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
 
       - name: Verify SDK
         shell: bash
