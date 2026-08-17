@@ -7,6 +7,10 @@ This repository is the canonical source for NeKiro's public Go SDKs:
 - `agent/routerauth`: verification and middleware for Router-issued invocation credentials.
 - `client`: application invocation of Agents already installed in one Workspace.
 
+The first released SDK targets the Gateway `/v1` surface exclusively. Agent
+nested calls remain on `/agent/v1`; the SDK never probes retired Gateway
+`/v2`, `/v3`, or `/v4` paths.
+
 The SDK depends only on public NeKiro Core packages: versioned `contracts`, and
 the provider-neutral `registry` surface used by the Nacos registration adapter.
 It does not import Core service internals, discover endpoints, retry, select
@@ -60,6 +64,13 @@ explicit full Core commit SHA. It temporarily resolves that exact public Core
 module revision in the CI checkout, runs the public-contract suite, and never
 commits the changed module files or adds a local `replace` directive. Core uses
 this reusable workflow after every merge to `main`.
+
+## Releases
+
+An annotated stable semantic tag runs the complete SDK checks and publishes a
+GitHub release with `release.json`. That evidence records the SDK tag and
+commit plus the exact Core module revision used by the release. The first
+release line requires NeKiro Core `v0.1.x` and its unified Platform API v1.
 
 ## RepoWiki
 

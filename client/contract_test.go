@@ -81,8 +81,8 @@ func TestClientSDKImportDirectionAndRouteAreFrozen(t *testing.T) {
 			literal, ok := node.(*ast.BasicLit)
 			if ok && literal.Kind == token.STRING {
 				value, _ := strconv.Unquote(literal.Value)
-				routeOccurrences += strings.Count(value, "/v4/workspaces/")
-				if strings.Contains(value, "/internal/") || strings.Contains(value, "/agent/v1/") || strings.Contains(value, "/v3/workspaces/") {
+				routeOccurrences += strings.Count(value, "/v1/workspaces/")
+				if strings.Contains(value, "/internal/") || strings.Contains(value, "/agent/v1/") || strings.Contains(value, "/v2/workspaces/") || strings.Contains(value, "/v3/workspaces/") || strings.Contains(value, "/v4/workspaces/") {
 					t.Fatalf("%s contains forbidden route %q", file, value)
 				}
 			}

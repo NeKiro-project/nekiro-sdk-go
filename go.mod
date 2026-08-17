@@ -2,7 +2,7 @@ module github.com/NeKiro-project/nekiro-sdk-go
 
 go 1.26.0
 
-require github.com/NeKiro-project/NeKiro v0.0.0-20260811175413-b588c754e369
+require github.com/NeKiro-project/NeKiro v0.0.0-20260817000254-c7f5abac9a9b
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect

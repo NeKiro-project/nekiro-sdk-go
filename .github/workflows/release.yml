@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  module:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out annotated release tag
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - name: Validate release identity
+        shell: bash
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'release tag must be a stable semantic version such as v0.1.0' >&2
+            exit 1
+          fi
+          test "$(git cat-file -t "refs/tags/$GITHUB_REF_NAME")" = tag
+          test "$(git rev-list -n 1 "refs/tags/$GITHUB_REF_NAME")" = "$GITHUB_SHA"
+
+      - name: Verify SDK
+        shell: bash
+        run: |
+          test -z "$(gofmt -l .)"
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+          go mod verify
+          go build ./...
+          go test -count=1 ./...
+          go test -race ./...
+          go vet ./...
+
+      - name: Record release compatibility
+        shell: bash
+        run: |
+          core_version=$(go list -m -f '{{.Version}}' github.com/NeKiro-project/NeKiro)
+          jq -n \
+            --arg tag "$GITHUB_REF_NAME" \
+            --arg commit "$GITHUB_SHA" \
+            --arg coreModuleVersion "$core_version" \
+            '{schemaVersion:"1",tag:$tag,commitSha:$commit,platformApiVersion:"v1",coreModuleVersion:$coreModuleVersion}' \
+            > release.json
+          jq -e . release.json >/dev/null
+          sha256sum release.json > checksums.txt
+
+      - name: Publish GitHub release evidence
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" release.json checksums.txt --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes --title "NeKiro Go SDK $GITHUB_REF_NAME"

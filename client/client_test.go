@@ -21,7 +21,7 @@ const validResultJSON = `{"schemaVersion":"1","invocationId":"inv-client","rootT
 func TestInvokeSendsExactV4RequestAndReturnsValidatedResult(t *testing.T) {
 	requests := make(chan []byte, 1)
 	server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		if request.Method != http.MethodPost || request.URL.Path != "/v4/workspaces/workspace-a/invocations" || request.URL.RawQuery != "" {
+		if request.Method != http.MethodPost || request.URL.Path != "/v1/workspaces/workspace-a/invocations" || request.URL.RawQuery != "" {
 			t.Errorf("unexpected request target: %s %s", request.Method, request.URL.String())
 		}
 		if values := request.Header.Values("Authorization"); len(values) != 1 || values[0] != "Bearer application-secret" {
