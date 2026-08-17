@@ -54,12 +54,13 @@ jobs:
             --arg tag "$GITHUB_REF_NAME" \
             --arg commit "$GITHUB_SHA" \
             --arg coreModuleVersion "$core_version" \
-            '{schemaVersion:"1",tag:$tag,commitSha:$commit,platformApiVersion:"1",coreModuleVersion:$coreModuleVersion}' \
+            '{schemaVersion:"1",tag:$tag,commitSha:$commit,platformApiVersion:"v1",coreModuleVersion:$coreModuleVersion}' \
             > release.json
           jq -e . release.json >/dev/null
+          sha256sum release.json > checksums.txt
 
       - name: Publish GitHub release evidence
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "$GITHUB_REF_NAME" release.json --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes --title "NeKiro Go SDK $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" release.json checksums.txt --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes --title "NeKiro Go SDK $GITHUB_REF_NAME"
